@@ -61,8 +61,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         button2.setOnClickListener {
-            val myPost = Post(1, 1, "layon.f", "Android Developer")
-            viewModel.pushPost(myPost)
+            //val myPost = Post(1, 1, "layon.f", "Android Developer")
+            //viewModel.pushPost(myPost)
+            viewModel.pushPost2(1, 1, "layon.f", "Android Developer")
 
             viewModel.myResponse.observe(this, Observer { response ->
                 if (response.isSuccessful) {

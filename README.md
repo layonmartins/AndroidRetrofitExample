@@ -4,5 +4,6 @@
 * Retrofit
 ** Simple GET Request
 ** URL Manipulation @Path, @Query, @QueryMap
+** Simple POST Request
 
 <img src="Screenshot_20210901_155621.png" width="30%">
