@@ -5,10 +5,13 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.retrofitsimplegetrequest.model.Post
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.retrofitsimplegetrequest.adapter.MyAdapter
 import com.example.retrofitsimplegetrequest.repository.Repository
 
 class MainActivity : AppCompatActivity() {
@@ -18,6 +21,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var button: Button
     private lateinit var button2: Button
     private lateinit var editText: EditText
+    private lateinit var recyclerView: RecyclerView
+    private val myAdapter by lazy { MyAdapter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,16 +36,24 @@ class MainActivity : AppCompatActivity() {
         val repository = Repository()
         val viewModelFactory = MainViewModelFactory(repository)
 
+        setupRecyclerview()
+
         viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
-        // viewModel.getPost()
-
-        val options: HashMap<String, String> = HashMap()
-        options["_sort"] = "id"
-        options["_order"] = "desc"
-
+        viewModel.getCustomPosts(1, "id", "asc")
+        viewModel.myCustomPosts.observe(this, Observer { response ->
+            if (response.isSuccessful) {
+                response.body()?.let { myAdapter.setData(it) }
+            } else {
+                Toast.makeText(this, response.code(), Toast.LENGTH_SHORT).show()
+            }
+        })
 
 
         button.setOnClickListener {
+            val options: HashMap<String, String> = HashMap()
+            options["_sort"] = "id"
+            options["_order"] = "desc"
+
             val myNumber = editText.text.toString()
             viewModel.getCustomPosts2(Integer.parseInt(myNumber), options)
 
@@ -76,6 +89,11 @@ class MainActivity : AppCompatActivity() {
                 }
             })
         }
+    }
 
+    private fun setupRecyclerview() {
+        recyclerView = findViewById(R.id.recyclerView)
+        recyclerView.adapter = myAdapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
     }
 }
