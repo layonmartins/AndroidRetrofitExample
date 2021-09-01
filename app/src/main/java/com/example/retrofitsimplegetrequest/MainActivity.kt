@@ -1,6 +1,7 @@
 package com.example.retrofitsimplegetrequest
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -34,11 +35,18 @@ class MainActivity : AppCompatActivity() {
 
         button.setOnClickListener {
             val myNumber = editText.text.toString()
-            viewModel.getPost2(Integer.parseInt(myNumber))
+            viewModel.getCustomPosts(Integer.parseInt(myNumber))
 
-            viewModel.myResponse2.observe(this, Observer { response ->
+            viewModel.myCustomPosts.observe(this, Observer { response ->
                 if (response.isSuccessful) {
                     textView.text = response.body().toString()
+                    response.body()?.forEach {
+                        Log.d("Response", it.userId.toString())
+                        Log.d("Response", it.id.toString())
+                        Log.d("Response", it.title.toString())
+                        Log.d("Response", it.body.toString())
+                        Log.d("Response", "------------")
+                    }
                 } else {
                     textView.text = response.code().toString()
                 }
